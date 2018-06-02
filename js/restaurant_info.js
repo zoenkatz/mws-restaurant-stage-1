@@ -1,5 +1,5 @@
 let restaurant;
-var map;
+let map;
 
 /**
  * Initialize Google map, called from HTML.
@@ -40,6 +40,7 @@ fetchRestaurantFromURL = (callback) => {
         return;
       }
       fillRestaurantHTML();
+      registerServiceWorker();
       callback(null, restaurant)
     });
   }
@@ -58,6 +59,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img'
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.alt = restaurant.name;
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -160,4 +162,18 @@ getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+/**
+ * Register serviceWorker
+ */
+registerServiceWorker = () => {
+    if (!navigator.serviceWorker) return;
+
+    navigator.serviceWorker.register('/serviceWorkerCache.js').then(() => {
+        console.log('Registration worked!');
+    }).catch(() => {
+        console.log('Registration failed!');
+
+    });
 }

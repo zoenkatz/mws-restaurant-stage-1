@@ -1,8 +1,8 @@
 let restaurants,
   neighborhoods,
-  cuisines
-var map
-var markers = []
+  cuisines;
+var map;
+var markers = [];
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
@@ -10,6 +10,7 @@ var markers = []
 document.addEventListener('DOMContentLoaded', (event) => {
   fetchNeighborhoods();
   fetchCuisines();
+  registerServiceWorker();
 });
 
 /**
@@ -158,10 +159,11 @@ createRestaurantHTML = (restaurant) => {
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
+  more.setAttribute('role', 'link');
   li.append(more)
 
   return li
-}
+};
 
 /**
  * Add markers for current restaurants to the map.
@@ -176,3 +178,19 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     self.markers.push(marker);
   });
 }
+
+/**
+ * Register serviceWorker
+ */
+registerServiceWorker = () => {
+    if (!navigator.serviceWorker) return;
+
+    navigator.serviceWorker.register('/serviceWorkerCache.js').then(() => {
+        console.log('Registration worked!');
+    }).catch(() => {
+        console.log('Registration failed!');
+
+    });
+}
+
+
